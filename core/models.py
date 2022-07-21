@@ -1,5 +1,12 @@
 from django.db import models
 from stdimage import StdImageField
+import uuid
+
+
+def get_file_path(_instance, filename):
+    ext = filename.split('.')[-1]
+    filename = f'{uuid.uuid4()}.{ext}'
+    return filename
 
 
 class Base(models.Model):
@@ -37,7 +44,7 @@ class Cargo(Base):
 
     class Meta:
         verbose_name = 'Cargo'
-        verbose_name_plural = 'Cargo'
+        verbose_name_plural = 'Cargos'
 
     def __str__(self):
         return self.cargo
@@ -47,7 +54,7 @@ class Funcionario(Base):
     nome = models.CharField('Nome', max_length=100)
     cargo = models.ForeignKey('core.Cargo', verbose_name='Cargo', on_delete=models.CASCADE)
     bio = models.TextField('Bio', max_length=200)
-    imagem = StdImageField('Imagem', upload_to='equipe',
+    imagem = StdImageField('Imagem', upload_to=get_file_path,
                            variations={'thumb': {'width': 480, 'height': 480, 'crop': True}})
     facebook = models.CharField('Facebook', max_length=100, default='#')
     twitter = models.CharField('Twitter', max_length=100, default='#')
